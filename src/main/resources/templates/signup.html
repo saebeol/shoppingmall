@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VELVET</title>
+    <link rel="stylesheet" href="/css/addmember.css">
+    <script src="/js/index.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+<!--        header-->
+<th:block th:replace="common/header :: headerFragment"></th:block>
+<!--        header end-->
+    <br>
+
+    <section>
+        <form action="/signup" method="post" class="mx-1 mx-md-4">
+            <div class="wrap">
+                <h4><b>회원가입</b></h4>
+                <hr>
+                <table>
+                    <tr>
+                        <td>아이디</td>
+                        <td><input type="text" id="username" name="username"></td>
+                    </tr>
+                    <tr>
+                        <td>비밀번호</td>
+                        <td><input type="password" id="password" name="password"></td>
+                    </tr>
+                    <tr>
+                        <td>이름</td>
+                        <td><input type="text" id="name" name="name"></td>
+                    </tr>
+                    <tr>
+                        <td>휴대전화</td>
+                        <td><input type="text" id="phone" name="phone"></td>
+                    </tr>
+                    <tr>
+                        <td>이메일</td>
+                        <td><input type="text" id="email" name="email"></td>
+                    </tr>
+                    <tr>
+                        <td>주소</td>
+                        <td><input type="text" id="address" name="address"></td>
+                    </tr>
+                    <tr>
+                        <td>회원구분</td>
+                        <td><input type="radio" name="role" id="role" value="ROLE_USER">구매자</td>
+                        <br>
+                        <td><input type="radio" name="role" id="role" value="ROLE_SELLER">판매자</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="agree">
+                <table>
+                    <tr>
+                        <td>
+                            <p><b>[필수]이용약관 동의</b></p>
+                            <textarea readonly>제 1조 동의하십니까?
+
+    헌법재판소 재판관은 탄핵 또는 금고 이상의 형의 선고에 의하지 아니하고는 파면되지 아니한다. 대법원장의 임기는 6년으로 하며, 중임할 수 없다. 모든 국민은 법률이 정하는 바에 의하여 국방의 의무를 진다. 국회는 의장 1인과 부의장 2인을 선출한다. 이 헌법시행 당시에 이 헌법에 의하여 새로 설치될 기관의 권한에 속하는 직무를 행하고 있는 기관은 이 헌법에 의하여 새로운 기관이 설치될 때까지 존속하며 그 직무를 행한다.
+                                </textarea><br>
+                            <p>이용약관에 동의하십니까?<input type="checkbox">동의함</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p><b>[필수]개인정보 수집 및 이용 동의</b></p>
+                            <textarea readonly>제 2조 동의하십니까?
+
+    재판의 전심절차로서 행정심판을 할 수 있다. 행정심판의 절차는 법률로 정하되, 사법절차가 준용되어야 한다. 국회는 국가의 예산안을 심의·확정한다. 이 헌법은 1988년 2월 25일부터 시행한다. 다만, 이 헌법을 시행하기 위하여 필요한 법률의 제정·개정과 이 헌법에 의한 대통령 및 국회의원의 선거 기타 이 헌법시행에 관한 준비는 이 헌법시행 전에 할 수 있다. 누구든지 병역의무의 이행으로 인하여 불이익한 처우를 받지 아니한다. 헌법재판소 재판관은 정당에 가입하거나 정치에 관여할 수 없다. 국가는 건전한 소비행위를 계도하고 생산품의 품질향상을 촉구하기 위한 소비자보호운동을 법률이 정하는 바에 의하여 보장한다.</textarea><br>
+                            <p>개인정보 수집 및 이용에 동의하십니까?<input type="checkbox">동의함</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p><b>[선택]쇼핑정보 수신 동의</b></p>
+                            <textarea readonly>제 3조 동의하십니까?
+
+    나는 헌법을 준수하고 국가를 보위하며 조국의 평화적 통일과 국민의 자유와 복리의 증진 및 민족문화의 창달에 노력하여 대통령으로서의 직책을 성실히 수행할 것을 국민 앞에 엄숙히 선서합니다. 법관은 탄핵 또는 금고 이상의 형의 선고에 의하지 아니하고는 파면되지 아니하며, 징계처분에 의하지 아니하고는 정직·감봉 기타 불리한 처분을 받지 아니한다. 대법관의 임기는 6년으로 하며, 법률이 정하는 바에 의하여 연임할 수 있다. 국회는 국정을 감사하거나 특정한 국정사안에 대하여 조사할 수 있으며, 이에 필요한 서류의 제출 또는 증인의 출석과 증언이나 의견의 진술을 요구할 수 있다. 비상계엄하의 군사재판은 군인·군무원의 범죄나 군사에 관한 간첩죄의 경우와 초병·초소·유독음식물공급·포로에 관한 죄중 법률이 정한 경우에 한하여 단심으로 할 수 있다. 다만, 사형을 선고한 경우에는 그러하지 아니하다.</textarea><br>
+                            <p>sms 수신을 동의하십니까?<input type="checkbox">동의함</p>
+                            <p>이메일 수신을 동의하십니까?<input type="checkbox">동의함</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <button type="submit" class="btn btn-dark">회원가입</button>
+        </form>
+    </section>
+    <!--        footer-->
+    <th:block th:replace="common/footer :: footerFragment"></th:block>
+    <!--        footer end-->
+</div>
+</body>
+
+</html>

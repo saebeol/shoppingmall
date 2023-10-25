@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div th:fragment="headerFragment">
+
+        <div class="logo">
+            <a th:href="@{/}" sec:authorize="!isAuthenticated()">
+                <img src="/img/logo1.png" alt="로고">
+            </a>
+            <a th:href="@{/main}" sec:authorize="isAuthenticated()">
+                <img src="/img/logo1.png" alt="로고">
+            </a>
+        </div>
+        <div class="smallmenu">
+            <ul class="d-flex">
+                <li><a th:text="|${user.getName()}회원님|" sec:authorize="isAuthenticated()">회원님</a></li>
+                <li><a href="/signup" sec:authorize="!isAuthenticated()">회원가입</a></li>
+                <li><a href="/signin" sec:authorize="!isAuthenticated()">로그인</a></li>
+                <li><a href="/logout" sec:authorize="isAuthenticated()">로그아웃</a></li>
+                <li><a sec:authorize="hasRole('ROLE_USER')" th:href="@{/user/{id}(id=${user.getId()})}">회원정보</a></li>
+                <li><a sec:authorize="hasRole('ROLE_USER')" th:href="@{/user/cart/{id}(id=${user.getId()})}">장바구니</a></li>
+                <li><a sec:authorize="hasRole('ROLE_SELLER')" th:href="@{/seller/{id}(id=${user.getId()})}">관리자정보</a></li>
+                <li><a sec:authorize="hasRole('ROLE_SELLER')" th:href="@{/seller/manage/{id}(id=${user.getId()})}">상품관리</a></li>
+                <li><a sec:authorize="hasRole('ROLE_SELLER')" th:href="@{/item/new}">상품등록</a></li>
+                <li class="community"><a th:href="@{/notice}">COMMUNITY</a> </li>
+            </ul>
+        </div>
+        <img src="/img/up1.png" class="scrollToTopButton" onclick="scrollToTop()">
+    <header>
+        <nav class="primary_nav_wrap">
+            <ul>
+                <li><a href="javascript:void(0);" onclick="scrollToBestItems()">BEST</a></li>
+                <li><a href="javascript:void(0);" onclick="scrollToNewArrivals()">NEW ITEM</a></li>
+                <li><a th:href="@{/nonlogin/item/list}" sec:authorize="!isAuthenticated()">TOP</a></li>
+                <li><a th:href="@{/nonlogin/item/list}" sec:authorize="!isAuthenticated()">BOTTOM</a></li>
+                <li><a th:href="@{/nonlogin/item/list}" sec:authorize="!isAuthenticated()">OUTER</a></li>
+                <li><a th:href="@{/nonlogin/item/list}" sec:authorize="!isAuthenticated()">WOMAN</a></li>
+                <li><a th:href="@{/item/list}" sec:authorize="isAuthenticated()">TOP</a></li>
+                <li><a th:href="@{/item/list}" sec:authorize="isAuthenticated()">BOTTOM</a></li>
+                <li><a th:href="@{/item/list}" sec:authorize="isAuthenticated()">OUTER</a></li>
+                <li><a th:href="@{/item/list}" sec:authorize="isAuthenticated()">WOMAN</a></li>
+            </ul>
+        </nav>
+    </header>
+</div>
+</html>

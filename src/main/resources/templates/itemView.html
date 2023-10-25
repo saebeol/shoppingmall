@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VELVET</title>
+    <link rel="stylesheet" href="/css/product.css">
+
+    <script src="/js/index.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+<!--        header-->
+<th:block th:replace="common/header :: headerFragment"></th:block>
+<!--        header end-->
+    <br>
+
+    <section>
+
+        <div class="container mt-5">
+            <hr>
+            <div class="row">
+                <div class="col-lg-6">
+                    <!-- 상품 이미지 -->
+                    <img class="card-img-top mb-5 mb-md-0" th:src="@{${item.getImgPath()}}" alt="..." />
+                </div>
+                <div class="col-lg-6">
+                    <!-- 상품 정보 -->
+                    <h3 th:text="${item.getName()}"></h3>
+                    <h4 th:text="|${item.getPrice()} 원|"></h4>
+                    <!-- 색상 선택 버튼 -->
+                    <div class="mb-4">
+                        <h5><b>색상 선택</b></h5>
+                        <div class="btn-group" role="group" aria-label="색상 선택">
+                            <button type="button" class="btn btn-outline-dark">Red</button>
+                            <button type="button" class="btn btn-outline-dark">Blue</button>
+                            <button type="button" class="btn btn-outline-dark">Green</button>
+                        </div>
+                    </div>
+
+                    <!-- 사이즈 선택 버튼 -->
+                    <div>
+                        <h5><b>사이즈 선택</b></h5>
+                        <div class="btn-group" role="group" aria-label="사이즈 선택">
+                            <button type="button" class="btn btn-outline-dark">Free</button>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- 개수 -->
+                    <form class="d-flex" sec:authorize="hasRole('ROLE_SELLER')" th:if="${item.getSeller().getId()} == ${user.getId()}">
+                        <div class="d-flex">
+                            <a th:href="@{/item/modify/{id} (id=${item.getId()})}">
+                                <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                                    상품 수정
+                                </button>
+                            </a>
+                            <a th:href="@{/item/delete/{id} (id=${item.getId()})}">
+                                <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                                    상품 삭제
+                                </button>
+                            </a>
+                        </div>
+                    </form>
+
+                    <form class="d-flex" sec:authorize="hasRole('ROLE_USER')" onsubmit="return orderitem();" th:action="@{/user/{id}/checkout/{itemId}(id=${user.id}, itemId=${item.id})}" method="post">
+                        <div class="d-flex">
+                            <input class="form-control text-center me-3" id="count" name="count" type="num" value="1"
+                                   style="max-width: 3rem"/>
+                            <button class="btn btn-outline-dark flex-shrink-0" id="basket" type="submit">
+                                구매하기
+                            </button>
+                        </div>
+                    </form>
+                    <br>
+                    <form class="d-flex" sec:authorize="hasRole('ROLE_USER')" onsubmit="return additem();" th:action="@{/user/cart/{id}/{itemId}(id=${user.id}, itemId=${item.id})}" method="post">
+                        <input class="form-control text-center me-3" id="amount" name="amount" type="num" value="1" style="max-width: 3rem"/>
+                        <button class="btn btn-outline-dark flex-shrink-0" id="basket" type="submit"><i class="bi-cart-fill me-1"></i>장바구니</button>
+                    </form>
+                    <script th:inline="javascript">
+                        /* <![CDATA[ */
+                        var leftitemcount = [[${item.Stock}]];
+                        const button = document.getElementById("basket")
+
+                        function additem() {
+                            var count = document.getElementById("amount").value
+                            if (isNaN(count)) {
+                                alert("숫자를 입력해주세요.")
+                                return false
+                            } else if (count > leftitemcount) {
+                                alert("재고가 부족합니다.")
+                                return false
+                            } else {
+                                <!--document.getElementById("buy").innerText = count-->
+                                return true
+                            }
+                        }
+
+                        function orderitem() {
+                            var count = document.getElementById("count").value
+                            var userMoney = [[${user.Coin}]];
+                            var itemPrice = [[${item.Price}]];
+                            if (isNaN(count)) {
+                                alert("숫자를 입력해주세요.")
+                                return false
+                            } else if ((count > leftitemcount) || (userMoney < (count*itemPrice))) {
+                                if (count > leftitemcount) {
+                                    alert("재고가 부족합니다.")
+                                } else if (userMoney < (count*itemPrice)) {
+                                    alert("잔액이 부족합니다.")
+                                }
+                                return false
+                            } else {
+                                <!--document.getElementById("buy").innerText = count-->
+                                return true
+                            }
+                        }
+
+                        <!--button.addEventListener("click",additem)-->
+                        /* ]]> */
+                    </script>
+                    <!-- 개수 끝 -->
+                </div>
+            </div>
+
+
+
+
+            <!-- 상품 상세 설명 -->
+            <div class="row mt-4">
+                <div class="col text-center">
+                    <h4>상세 설명</h4>
+                    <hr>
+                    <!-- <p>상품에 대한 자세한 설명이 여기에 들어갑니다.</p> -->
+
+                </div>
+            </div>
+
+            <!-- 상세 사진 -->
+
+            <img src="/230913/230912/img/sub/outer/YHJK2269_explain_yh.jpg" alt="상품 이미지"
+                 class="img-fluid mx-auto d-block">
+
+        </div>
+
+
+        <!-- 리뷰 -->
+
+        <div class="container mt-5">
+            <div class="d-flex flex-row mb-1">
+                <div class="p-1"><b>REVIEW</b></div>
+            </div>
+            <!-- 리뷰헤더 끝 -->
+            <hr>
+
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col">
+                        <img src="/230913/230912/img/woman.png" class="img-fluid" alt="...">
+                    </div>
+                    <div class="col">
+                        <img src="/230913/230912/img/woman.png" class="img-fluid" alt="...">
+                    </div>
+                    <div class="col">
+                        <img src="/230913/230912/img/woman.png" class="img-fluid" alt="...">
+                    </div>
+                    <div class="col">
+                        <img src="/230913/230912/img/woman.png" class="img-fluid" alt="...">
+                    </div>
+                    <div class="col">
+                        <img src="/230913/230912/img/woman.png" class="img-fluid" alt="...">
+                    </div>
+                    <div class="col">
+                        <img src="/230913/230912/img/woman.png" class="img-fluid" alt="...">
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 리뷰 바디 -->
+
+            <table class="table caption-top align-middle">
+                <thead>
+                <tr>
+                    <th scope="col">상품후기</th>
+                    <th scope="col">성&nbsp;별</th>
+                    <th scope="col">&nbsp;작&nbsp;성&nbsp;자&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>봄 가을에 입기 적당한 두께고 겨울에는 껴입으면 가능할거 같은 두께입니다. 루즈핏 느낌의 항공 찾고 있었는데 디자인 너무 맘에 들고 막 입기 좋고 스타일링
+                        하기에도 쉬운 디자인입니다. 재질은 부드럽고 활동성이 좋고 사이즈사 여유 있어서 더 좋은거 같습니다
+                        봄 가을에 입기 적당한 두께고 겨울에는 껴입으면 가능할거 같은 두께입니다. 루즈핏 느낌의 항공 찾고 있었는데 디자인 너무 맘에 들고 막 입기 좋고 스타일링
+                        하기에도 쉬운 디자인입니다. 재질은 부드럽고 활동성이 좋고 사이즈사 여유 있어서 더 좋은거 같습니다</td>
+                    <td >여성</td>
+                    <td>이순신</td>
+                </tr>
+                <tr>
+                    <td>봄 가을에 입기 적당한 두께고 겨울에는 껴입으면 가능할거 같은 두께입니다. 루즈핏 느낌의 항공 찾고 있었는데 디자인 너무 맘에 들고 막 입기 좋고 스타일링
+                        하기에도 쉬운 디자인입니다. 재질은 부드럽고 활동성이 좋고 사이즈사 여유 있어서 더 좋은거 같습니다
+                        봄 가을에 입기 적당한 두께고 겨울에는 껴입으면 가능할거 같은 두께입니다. 루즈핏 느낌의 항공 찾고 있었는데 디자인 너무 맘에 들고 막 입기 좋고 스타일링
+                        하기에도 쉬운 디자인입니다. 재질은 부드럽고 활동성이 좋고 사이즈사 여유 있어서 더 좋은거 같습니다</td>
+                    <td>남성</td>
+                    <td>이순신</td>
+                </tr>
+                <tr>
+                    <td>봄 가을에 입기 적당한 두께고 겨울에는 껴입으면 가능할거 같은 두께입니다. 루즈핏 느낌의 항공 찾고 있었는데 디자인 너무 맘에 들고 막 입기 좋고 스타일링
+                        하기에도 쉬운 디자인입니다. 재질은 부드럽고 활동성이 좋고 사이즈사 여유 있어서 더 좋은거 같습니다
+                        봄 가을에 입기 적당한 두께고 겨울에는 껴입으면 가능할거 같은 두께입니다. 루즈핏 느낌의 항공 찾고 있었는데 디자인 너무 맘에 들고 막 입기 좋고 스타일링
+                        하기에도 쉬운 디자인입니다. 재질은 부드럽고 활동성이 좋고 사이즈사 여유 있어서 더 좋은거 같습니다</td>
+                    <td>여성</td>
+                    <td>이순신</td>
+                </tr>
+                </tbody>
+            </table>
+
+
+
+
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- 리뷰바디 끝 -->
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </section>
+
+<!--        footer-->
+<th:block th:replace="common/footer :: footerFragment"></th:block>
+<!--        footer end-->
+</div>
+
+</body>
+
+</html>
